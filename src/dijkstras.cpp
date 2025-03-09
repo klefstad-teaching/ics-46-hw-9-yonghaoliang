@@ -1,13 +1,11 @@
 #include "dijkstras.h"
 #include <algorithm>
 
-typedef pair<int, int> Node; // (weight, vertex)
-
 vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous) {
     int n = G.numVertices;
     vector<int> distance(n, INF);
     vector<bool> visited(n, false);
-    priority_queue<Node, vector<Node>, greater<Node>> pq;
+     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
 
     distance[source] = 0;
     previous[source] = -1;
