@@ -1,38 +1,40 @@
 #include "dijkstras.h"
+#include <algorithm>
 
-vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous){
-    int numVertices = G.numVertices;
-    vector<int> distances(numVertices, INF);
-    vector<bool> visited(numVecrtices, false);
+typedef pair<int, int> Node; // (weight, vertex)
 
-    distances[source] = UNDEFINED;
-    priority_queue<pair<int,int>> minHeap;
+vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous) {
+    int n = G.numVertices;
+    vector<int> distance(n, INF);
+    vector<bool> visited(n, false);
+    priority_queue<Node, vector<Node>, greater<Node>> pq;
 
-    minHeap.push({source,0});
+    distance[source] = 0;
+    previous[source] = -1;
+    pq.push({0, source});
 
-    while(!minHeap.empty()){
-        int u = minHeap.top().first;
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
 
         if (visited[u]) continue;
         visited[u] = true;
 
         for (const Edge& edge : G[u]) {
             int v = edge.dst;
-            // int weight = edge.weight;
-            int weight = edge.second;
+            int weight = edge.weight;
             
             if (!visited[v] && distance[u] + weight < distance[v]) {
                 distance[v] = distance[u] + weight;
                 previous[v] = u;
-                minHeap.push({distance[v], v});
+                pq.push({distance[v], v});
             }
         }
     }
     return distance;
 }
 
-
-vector<int> extract_shortest_path(const vector<int>& /*distances*/, const vector<int>& previous, int destination){
+vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination) {
     vector<int> path;
     for (int at = destination; at != -1; at = previous[at]) {
         path.push_back(at);
@@ -41,8 +43,8 @@ vector<int> extract_shortest_path(const vector<int>& /*distances*/, const vector
     return path;
 }
 
-void print_path(const vector<int>& v, int total){
-    if (path.empty()) {
+void print_path(const vector<int>& path, int total) {
+    if (path.empty() || total == INF) {
         cout << "No path found." << endl;
         return;
     }
