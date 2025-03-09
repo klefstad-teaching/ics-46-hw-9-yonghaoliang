@@ -3,7 +3,7 @@
 
 typedef pair<int, int> Node; // (weight, vertex)
 
-vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous) {
+vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous){
     int n = G.numVertices;
     vector<int> distance(n, INF);
     vector<bool> visited(n, false);
@@ -13,18 +13,18 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
     previous[source] = -1;
     pq.push({0, source});
 
-    while (!pq.empty()) {
+    while (!pq.empty()){
         int u = pq.top().second;
         pq.pop();
 
         if (visited[u]) continue;
         visited[u] = true;
 
-        for (const Edge& edge : G[u]) {
+        for (const Edge& edge : G[u]){
             int v = edge.dst;
             int weight = edge.weight;
             
-            if (!visited[v] && distance[u] + weight < distance[v]) {
+            if (!visited[v] && distance[u] + weight < distance[v]){
                 distance[v] = distance[u] + weight;
                 previous[v] = u;
                 pq.push({distance[v], v});
@@ -34,16 +34,19 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
     return distance;
 }
 
-vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination) {
+vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination){
     vector<int> path;
-    for (int at = destination; at != -1; at = previous[at]) {
+    if (distances[destination] == INF){
+        return path;
+    }
+    for (int at = destination; at != -1; at = previous[at]){
         path.push_back(at);
     }
     reverse(path.begin(), path.end());
     return path;
 }
 
-void print_path(const vector<int>& path, int total) {
+void print_path(const vector<int>& path, int total){
     if (path.empty() || total == INF) {
         cout << "No path found." << endl;
         return;
